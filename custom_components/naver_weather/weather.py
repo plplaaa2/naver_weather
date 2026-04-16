@@ -3,7 +3,7 @@ from datetime import timedelta
 import logging
 
 from homeassistant.components.weather import WeatherEntity
-from homeassistant.const import UnitOfTemperature, UnitOfSpeed
+from homeassistant.const import UnitOfTemperature, UnitOfSpeed, UnitOfLength
 
 from homeassistant.components.weather import (
     ATTR_CONDITION_CLEAR_NIGHT,
@@ -70,6 +70,7 @@ class NWeatherMain(NWeatherDevice, WeatherEntity):
     """Representation of a weather condition."""
     _attr_native_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_native_wind_speed_unit = UnitOfSpeed.METERS_PER_SECOND
+    _attr_native_precipitation_unit = UnitOfLength.MILLIMETERS
     _attr_supported_features = ( WeatherEntityFeature.FORECAST_DAILY | WeatherEntityFeature.FORECAST_TWICE_DAILY )
     
     @property
@@ -160,9 +161,12 @@ class NWeatherMain(NWeatherDevice, WeatherEntity):
         exclude_keys = [
             "airOfferInfoUpdate",
             NOW_TEMP[0],    # NowTemp
+            NOW_HUMI[0],    # Humidity
             NOW_WEATHER[0], # NowWeather
             CONDITION[0],   # Condition
-            # FELL_TEMP와 RAINFALL은 하단에서 표준 속성으로 이미 제공되므로 중복 필요 없음
+            WIND_SPEED[0],  # WindSpeed
+            WIND_DIR[0],    # WindBearing
+            # FEEL_TEMP와 RAINFALL은 하단에서 표준 속성으로 이미 제공되므로 중복 필요 없음
             FEEL_TEMP[0],
             RAINFALL[0],
         ]
