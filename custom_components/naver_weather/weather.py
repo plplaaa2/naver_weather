@@ -125,9 +125,12 @@ class NWeatherMain(NWeatherDevice, WeatherEntity):
     def native_precipitation(self):
         """Return the precipitation."""
         try:
-            return float(self.api.result.get(RAINFALL[0]))
+            val = self.api.result.get(RAINFALL[0])
+            if val is None or val == "":
+                return 0.0
+            return float(val)
         except Exception:
-            return
+            return 0.0
 
     @property
     def condition(self):
@@ -168,7 +171,7 @@ class NWeatherMain(NWeatherDevice, WeatherEntity):
             WIND_DIR[0],    # WindBearing
             # FEEL_TEMP와 RAINFALL은 하단에서 표준 속성으로 이미 제공되므로 중복 필요 없음
             FEEL_TEMP[0],
-            RAINFALL[0],
+            # RAINFALL[0], # 웨더 카드 호환성을 위해 속성에 유지
         ]
         return {k: v for k, v in self.api.result.items() if k not in exclude_keys}
 
