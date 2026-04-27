@@ -338,7 +338,12 @@ class NWeatherAPI:
 
 
                 # 강수
-                Rainfall    = self._bs4_select_one(soup, "div.climate_box > div.graph_wrap > ul > li > div")
+                Rainfall = summary_data.get("강수")
+                if Rainfall is None:
+                    Rainfall = self._bs4_select_one(soup, "div.climate_box > div.graph_wrap > ul > li > div")
+
+                if Rainfall:
+                    Rainfall = re2float(Rainfall)
 
                 rainPercentVal = soup.select("div.climate_box > div.icon_wrap > ul > li > em")
 
@@ -442,6 +447,13 @@ class NWeatherAPI:
                                             rainyStartTmr = tm
                             except Exception as exx:
                                 _LOGGER.info("except")
+
+                # 현재 강수량이 있으면 비 시작 시간을 '현재'로 설정 (웨더 카드 표시용)
+                try:
+                    if Rainfall and float(Rainfall) > 0 and rainyStart == "비안옴":
+                        rainyStart = "현재"
+                except:
+                    pass
 
                 # 내일 오전온도/오전상태
                 tomorrowMTemp = '-'
