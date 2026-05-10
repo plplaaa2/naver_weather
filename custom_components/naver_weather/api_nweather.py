@@ -141,6 +141,7 @@ class NWeatherAPI:
         self.unique = {}
         self.last_update = None
         self._lock = asyncio.Lock()
+        self.forecast = []
 
         _LOGGER.debug(f"[{BRAND}] Initialize -> {self.area}")
 
@@ -338,29 +339,19 @@ class NWeatherAPI:
 
 
                 # 강수
-                Rainfall = summary_data.get("강수")
-                if Rainfall is None:
-                    Rainfall = self._bs4_select_one(soup, "div.climate_box > div.graph_wrap > ul > li > div")
-
-                if Rainfall:
-                    Rainfall = re2float(Rainfall)
+                RainfallRaw = self._bs4_select_one(soup, "div.climate_box > div.graph_wrap > ul > li > div")
+                Rainfall    = re2float(RainfallRaw)
 
                 rainPercentVal = soup.select("div.climate_box > div.icon_wrap > ul > li > em")
-
-                nCnt = 0
-                rainSum = 0
-
+                rainPercentList = []
                 for em in rainPercentVal:
-                            
-                    if nCnt > 11:
+                    if len(rainPercentList) >= 12:
                         continue
 
                     if '%' in em.text:
-                        rainSum += int(em.text[:-1])
-
-                    nCnt += 1
-
-                rainPercent = str(( round(rainSum/11, 1) if rainSum > 0 else 0 ))
+                        rainPercentList.append(int(em.text[:-1]))
+                
+                rainPercent = str(max(rainPercentList) if rainPercentList else 0)
                 
 
                 # 미세먼지/초미세먼지/자외선(등급)/일몰일출
@@ -447,13 +438,6 @@ class NWeatherAPI:
                                             rainyStartTmr = tm
                             except Exception as exx:
                                 _LOGGER.info("except")
-
-                # 현재 강수량이 있으면 비 시작 시간을 '현재'로 설정 (웨더 카드 표시용)
-                try:
-                    if Rainfall and float(Rainfall) > 0 and rainyStart == "비안옴":
-                        rainyStart = "현재"
-                except:
-                    pass
 
                 # 내일 오전온도/오전상태
                 tomorrowMTemp = '-'
@@ -622,7 +606,7 @@ class NWeatherAPI:
                 if UltraFineDust is None:
                     UltraFineDust = '0'
 
-                if Rainfall is None:
+                if Rainfall is None or Rainfall == "" or Rainfall == "-":
                     Rainfall = '0'
 
 
