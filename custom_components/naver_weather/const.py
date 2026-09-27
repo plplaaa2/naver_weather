@@ -8,8 +8,7 @@ from homeassistant.const import (
     UnitOfVolumetricFlux,
     
     PERCENTAGE,
-    CONCENTRATION_PARTS_PER_MILLION,
-    CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+    UnitOfDensity,
 )
 
 DOMAIN = "naver_weather"
@@ -110,8 +109,9 @@ RAINFALL = ["Rainfall", "시간당강수량", UnitOfVolumetricFlux.MILLIMETERS_P
 UV = ["TodayUV", "자외선지수", "", "mdi:weather-sunny-alert", ""]
 UV_GRADE = ["TodayUVGrade", "자외선등급", "", "mdi:weather-sunny-alert", ""]
 
-UDUST = ["UltraFineDust", "초미세먼지", CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, "mdi:blur-linear",SensorDeviceClass.PM25]
-NDUST = ["FineDust", "미세먼지", CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, "mdi:blur", SensorDeviceClass.PM25]
+# Use the supported density unit for dust sensors. Related files: sensor.py.
+UDUST = ["UltraFineDust", "초미세먼지", UnitOfDensity.MICROGRAMS_PER_CUBIC_METER, "mdi:blur-linear",SensorDeviceClass.PM25]
+NDUST = ["FineDust", "미세먼지", UnitOfDensity.MICROGRAMS_PER_CUBIC_METER, "mdi:blur", SensorDeviceClass.PM25]
 UDUST_GRADE = ["UltraFineDustGrade", "초미세먼지등급", "", "mdi:blur-linear", ""]
 NDUST_GRADE = ["FineDustGrade", "미세먼지등급", "", "mdi:blur", ""]
 

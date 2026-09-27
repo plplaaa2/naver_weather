@@ -1,0 +1,1 @@
+{"date":"2026-09-27","dev_version":"2.5.5-dev.1","changes":["Remove unused deprecated ppm constant import.","Use UnitOfDensity.MICROGRAMS_PER_CUBIC_METER for both dust sensors."],"note":"Existing public version values are unchanged."}
